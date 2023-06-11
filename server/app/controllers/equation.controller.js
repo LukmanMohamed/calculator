@@ -4,16 +4,14 @@ const Equation = db.equations;
 // Create and save the new equation
 exports.create = (req, res) => {
     // Validate request
-    if (!req.body.title) {
+    if (!req.body.expression) {
         res.status(400).send({ message: "Content cannot be empty!" });
         return;
     }
 
     // Create an equation
     const equation = new Equation({
-        title: req.body.title,
-        description: req.body.description,
-        published: req.body.published ? req.body.published : false
+        expression: req.body.expression,
     });
 
     // Save the equation into the database
@@ -32,8 +30,8 @@ exports.create = (req, res) => {
 
 // Retrieve all equations from the database.
 exports.findAll = (req, res) => {
-    const title = req.query.title;
-    var condition = title ? { title: { $regex: new RegExp(title), $options: "i" } } : {};
+    const expression = req.query.expression;
+    var condition = expression ? { expression: { $regex: new RegExp(expression), $options: "i" } } : {};
 
     Equation.find(condition)
         .then(data => {

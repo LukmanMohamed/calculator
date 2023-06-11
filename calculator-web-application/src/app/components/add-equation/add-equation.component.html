@@ -3,13 +3,9 @@
     <div class="submit-form">
         <div *ngIf="!submitted">
             <div class="form-group">
-                <label for="title">Title</label>
-                <input type="text" class="form-control" id="title" required [(ngModel)]="equation.title" name="title" />
-            </div>
-            <div class="form-group">
-                <label for="description">Description</label>
-                <input class="form-control" id="description" required [(ngModel)]="equation.description"
-                    name="description" />
+                <label for="expression">Expression</label>
+                <input type="text" class="form-control" id="expression" required [(ngModel)]="equation.expression"
+                    name="expression" />
             </div>
             <button (click)="saveEquation()" class="btn btn-success">Submit</button>
         </div>

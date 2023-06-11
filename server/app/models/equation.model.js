@@ -3,9 +3,7 @@ module.exports = mongoose => {
         "equation",
         mongoose.Schema(
             {
-                title: String,
-                description: String,
-                published: Boolean
+                expression: String,
             },
             { timestamps: true }
         )

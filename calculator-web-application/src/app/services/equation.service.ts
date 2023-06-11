@@ -36,7 +36,7 @@ export class EquationService {
     return this.http.delete(baseUrl);
   }
 
-  findByTitle(title: any): Observable<Equation[]> {
-    return this.http.get<Equation[]>(`${baseUrl}?title=${title}`);
+  findByExpression(expression: string): Observable<Equation[]> {
+    return this.http.get<Equation[]>(`${baseUrl}?expression=${expression}`);
   }
 }

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Equation } from 'src/app/models/equation.model';
 import { EquationService } from 'src/app/services/equation.service';
+import { ComputeEngine, Parser } from '@cortex-js/compute-engine';
 
 @Component({
   selector: 'app-add-equation',
@@ -9,9 +10,7 @@ import { EquationService } from 'src/app/services/equation.service';
 })
 export class AddEquationComponent {
   equation: Equation = {
-    title: '',
-    description: '',
-    published: false
+    expression: ''
   };
   submitted = false;
 
@@ -19,8 +18,7 @@ export class AddEquationComponent {
 
   saveEquation(): void {
     const data = {
-      title: this.equation.title,
-      description: this.equation.description
+      expression: this.equation.expression,
     };
 
     this.equationService.create(data)
@@ -36,9 +34,7 @@ export class AddEquationComponent {
   newEquation(): void {
     this.submitted = false;
     this.equation = {
-      title: '',
-      description: '',
-      published: false
+      expression: '',
     };
   }
 }

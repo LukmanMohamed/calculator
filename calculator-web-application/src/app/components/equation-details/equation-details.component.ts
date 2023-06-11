@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BoxedExpression, ComputeEngine } from '@cortex-js/compute-engine';
 import { Equation } from 'src/app/models/equation.model';
 import { EquationService } from 'src/app/services/equation.service';
 
@@ -11,14 +13,22 @@ import { EquationService } from 'src/app/services/equation.service';
 export class EquationDetailsComponent implements OnInit {
   @Input() viewMode = false;
   @Input() currentEquation: Equation = {
-    title: '',
-    description: '',
-    published: false,
+    expression: ''
   }
+
+  variables: {symbols: string[], values: number[]} = {
+    symbols: [],
+    values: []
+  };
+  ce: ComputeEngine;
+  expr: BoxedExpression | null = null;
+
 
   message = '';
 
-  constructor(private equationService: EquationService, private route: ActivatedRoute, private router: Router) { }
+  constructor(private equationService: EquationService, private route: ActivatedRoute, private router: Router, public snackBar: MatSnackBar) { 
+    this.ce = new ComputeEngine();
+  }
 
   public ngOnInit(): void {
     if (!this.viewMode) {
@@ -27,31 +37,16 @@ export class EquationDetailsComponent implements OnInit {
     }
   }
 
+  public ngOnChanges(): void {
+    this.expr = this.ce.parse(this.currentEquation.expression ?? null);
+    this.setVariables(this.currentEquation);
+  }
+
   private getEquation(id: string): void {
     this.equationService.get(id).subscribe({
       next: (data) => {
         this.currentEquation = data;
         console.log(data);
-      }, error: (err) => {
-        console.error(err);
-      }
-    });
-  }
-
-  public updatePublished(status: boolean): void {
-    const data = {
-      title: this.currentEquation.title,
-      description: this.currentEquation.description,
-      published: status
-    };
-
-    this.message = '';
-
-    this.equationService.update(this.currentEquation._id, data).subscribe({
-      next: (res) => {
-        console.log(res);
-        this.currentEquation.published = status;
-        this.message = res.message ? res.message : 'The status was updated successfully!';
       }, error: (err) => {
         console.error(err);
       }
@@ -80,5 +75,26 @@ export class EquationDetailsComponent implements OnInit {
         console.error(err);
       }
     })
+  }
+
+  public setVariables(equation: Equation): void {
+    if (equation.expression) {
+      let expr = this.ce.parse(equation.expression);
+      this.variables = {symbols: [], values: []};
+      this.variables.symbols = expr.symbols;
+      console.log("Hello");
+    }
+  }
+
+  public evaluateEquation() {
+    if (this.expr) {
+      var result: any = {};
+      this.variables.symbols.forEach((key, index) => result[key] = this.variables.values[index]);
+      this.ce.set(result);
+      let message = `${this.expr.N().valueOf()}`
+      this.snackBar.open(message, undefined, {
+        duration: 2000,
+      });
+    }
   }
 }

@@ -12,7 +12,7 @@ export class EquationsListComponent implements OnInit {
   public equations?: Equation[];
   public currentEquation: Equation = {};
   public currentIndex = -1;
-  public title = '';
+  public expression = '';
 
   constructor(private equationService: EquationService) { }
 
@@ -54,11 +54,11 @@ export class EquationsListComponent implements OnInit {
     });
   }
 
-  public searchTitle(): void {
+  public searchExpression(): void {
     this.currentEquation = {};
     this.currentIndex = -1;
 
-    this.equationService.findByTitle(this.title).subscribe({
+    this.equationService.findByExpression(this.expression).subscribe({
       next: (data) => {
         this.equations = data;
         console.log(data);

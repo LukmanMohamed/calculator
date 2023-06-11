@@ -1,24 +1,45 @@
 <div *ngIf="viewMode; else editable">
     <div *ngIf="currentEquation._id">
-        <h4>Equation</h4>
+        <h4>
+            Equation
+        </h4>
         <div>
-            <label><strong>Title:</strong></label> {{ currentEquation.title }}
+            <label>
+                <strong>
+                    Expression:
+                </strong>
+            </label>
+            {{ currentEquation.expression }}
         </div>
         <div>
-            <label><strong>Description:</strong></label>
-            {{ currentEquation.description }}
+            <label>
+                <strong>
+                    Variables:
+                </strong>
+            </label>
+
+            <div class="form-group">
+                <div *ngFor="let variable of variables.symbols; let i = index">
+                    <label [for]="variable">
+                        {{variable}}
+                    </label>
+                    <input type="number" class="form-control" [id]="variable" [(ngModel)]="variables.values[i]"
+                        [name]="variable" required/>
+                </div>
+            </div>
         </div>
-        <div>
-            <label><strong>Status:</strong></label>
-            {{ currentEquation.published ? "Published" : "Pending" }}
-        </div>
+        <a class="badge badge-danger" (click)="evaluateEquation()">
+            Calculate
+        </a>
         <a class="badge badge-warning" routerLink="/equations/{{ currentEquation._id }}">
             Edit
         </a>
     </div>
     <div *ngIf="!currentEquation">
         <br />
-        <p>Please click on a Equation...</p>
+        <p>
+            Please click on a Equation...
+        </p>
     </div>
 </div>
 <ng-template #editable>
@@ -26,35 +47,27 @@
         <h4>Equation</h4>
         <form>
             <div class="form-group">
-                <label for="title">Title</label>
-                <input type="text" class="form-control" id="title" [(ngModel)]="currentEquation.title" name="title" />
-            </div>
-            <div class="form-group">
-                <label for="description">Description</label>
-                <input type="text" class="form-control" id="description" [(ngModel)]="currentEquation.description"
-                    name="description" />
-            </div>
-            <div class="form-group">
-                <label><strong>Status:</strong></label>
-                {{ currentEquation.published ? "Published" : "Pending" }}
+                <label for="expression">
+                    Expression
+                </label>
+                <input type="text" class="form-control" id="expression" [(ngModel)]="currentEquation.expression"
+                    name="expression" />
             </div>
         </form>
-        <button class="badge badge-primary mr-2" *ngIf="currentEquation.published" (click)="updatePublished(false)">
-            UnPublish
-        </button>
-        <button *ngIf="!currentEquation.published" class="badge badge-primary mr-2" (click)="updatePublished(true)">
-            Publish
-        </button>
         <button class="badge badge-danger mr-2" (click)="deleteEquation()">
             Delete
         </button>
         <button type="submit" class="badge badge-success mb-2" (click)="updateEquation()">
             Update
         </button>
-        <p>{{ message }}</p>
+        <p>
+            {{ message }}
+        </p>
     </div>
     <div *ngIf="!currentEquation._id">
         <br />
-        <p>Cannot access this Equation...</p>
+        <p>
+            Cannot access this Equation...
+        </p>
     </div>
 </ng-template>
